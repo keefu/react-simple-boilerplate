@@ -7,10 +7,10 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: {name: "Michelle"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
         {
-          username: "Bob",
+          username: "Michelle",
           content: "Has anyone seen my marbles?",
           id:"ThIsIsAnID123",
         },
@@ -44,22 +44,23 @@ class App extends Component {
     this.updateStatus(true);
   };
 
-  addMessage = (e) =>  {
-    if(e.key === 'Enter') {
-    console.log(e.target.value);
-      const newMessage = {username: this.state.currentUser.name, content: e.target.value};
+  addMessage = (event) =>  {
+    if(event.key === 'Enter') {
+    console.log(event.target.value);
+      const newMessage = {username: this.state.currentUser.name, content: event.target.value};
       this.SocketServer.send(JSON.stringify(newMessage));
-      e.target.value = "";
+      event.target.value = "";
     }
   }
 
-  addUserName = (e) => {
-    console.log(e.target.value);
-    this.setState({currentUser: {name: e.target.value}});
-    if(e.target.value === ""){
+  addUserName = (event) => {
+    console.log(event.target.value);
+    this.setState({currentUser: {name: event.target.value}});
+    if(event.target.value === ""){
       this.setState({currentUser: {name: "Anonymous"}});
     }
   }
+  
   //Catching message from server
   handleOnMessage = (event) => {
     console.log(event);
@@ -73,15 +74,6 @@ class App extends Component {
     this.SocketServer.onopen = this.handleOnOpen;
     this.SocketServer.onmessage = this.handleOnMessage;
     console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = [...this.state.messages, newMessage]
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages})
-    }, 3000);
   }
 
   render() {
