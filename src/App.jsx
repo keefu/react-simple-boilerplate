@@ -60,7 +60,15 @@ class App extends Component {
       this.setState({currentUser: {name: "Anonymous"}});
     }
   }
-
+  //Catching message from server
+  handleOnMessage = (event) => {
+    console.log(event);
+    console.log("JUST DATA",event.data);
+    const newMessage = JSON.parse(event.data);
+    const newMessages = [...this.state.messages, newMessage]
+    this.setState({messages: newMessages})
+  }
+  
   componentDidMount() {
     this.SocketServer.onopen = this.handleOnOpen;
     this.SocketServer.onmessage = this.handleOnMessage;
@@ -69,10 +77,10 @@ class App extends Component {
       console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
       const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage)
+      const messages = [...this.state.messages, newMessage]
       // Update the state of the app component.
       // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages})
+      this.setState({messages})
     }, 3000);
   }
 
