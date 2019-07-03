@@ -23,6 +23,25 @@ class App extends Component {
     }
     
   }
+
+  addMessage = (e) =>  {
+    if(e.key === 'Enter') {
+    console.log(e.target.value);
+      const newMessage = {id: 3, username: this.state.currentUser.name, content: e.target.value};
+      const messages = this.state.messages.concat(newMessage)
+      this.setState({messages: messages})
+      e.target.value = "";
+    }
+  }
+
+  addUserName = (e) => {
+    console.log(e.target.value);
+    this.setState({currentUser: {name: e.target.value}});
+    if(e.target.value === ""){
+      this.setState({currentUser: {name: "Anonymous"}});
+    }
+  }
+
   componentDidMount() {
     console.log("componentDidMount <App />");
     setTimeout(() => {
@@ -35,11 +54,12 @@ class App extends Component {
       this.setState({messages: messages})
     }, 3000);
   }
+
   render() {
     return (
       <div>
         <h1>Hello React :)</h1>
-        <ChatBar currentUser={this.state.currentUser.name}/>
+        <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} addUserName={this.addUserName}/>
         <MessageList messages={this.state.messages}/>
         <Header/>
       </div>
