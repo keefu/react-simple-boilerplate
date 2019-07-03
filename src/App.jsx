@@ -4,8 +4,8 @@ import MessageList from "./MessageList.jsx";
 import Header from "./Header.jsx";
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
@@ -21,15 +21,34 @@ class App extends Component {
         }
       ]
     }
+
+  // Creating the connection to the Socket Server
+  this.SocketServer = new WebSocket('ws://localhost:3001');
     
   }
+
+  updateStatus = status => {
+    this.setState({
+      currentUser: {
+        // spreading currentUser object properties
+        ...this.state.currentUser,
+        // overwriting the online key value
+        online: status,
+      },
+    });
+  };
+
+  handleOnOpen = event => {
+    console.log('Connection to server established.');
+    // changing from offline to online
+    this.updateStatus(true);
+  };
 
   addMessage = (e) =>  {
     if(e.key === 'Enter') {
     console.log(e.target.value);
-      const newMessage = {id: 3, username: this.state.currentUser.name, content: e.target.value};
-      const messages = this.state.messages.concat(newMessage)
-      this.setState({messages: messages})
+      const newMessage = {username: this.state.currentUser.name, content: e.target.value};
+      this.SocketServer.send(JSON.stringify(newMessage));
       e.target.value = "";
     }
   }
@@ -43,6 +62,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.SocketServer.onopen = this.handleOnOpen;
+    this.SocketServer.onmessage = this.handleOnMessage;
     console.log("componentDidMount <App />");
     setTimeout(() => {
       console.log("Simulating incoming message");
