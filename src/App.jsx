@@ -7,6 +7,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      userCount:0,
       currentUser: {name: "Michelle"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
         {
@@ -85,8 +86,12 @@ class App extends Component {
     console.log(event);
     console.log("JUST DATA:",event.data);
     const newMessage = JSON.parse(event.data);
-    const newMessages = [...this.state.messages, newMessage]
-    this.setState({messages: newMessages})
+    if(newMessage.type !== "incomingUserCount"){
+      const newMessages = [...this.state.messages, newMessage]
+      this.setState({messages: newMessages})
+    } else {
+      this.setState({userCount: newMessage.userCount})
+    }
   }
   
   componentDidMount() {
@@ -101,7 +106,7 @@ class App extends Component {
         <h1>Hello React :)</h1>
         <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} addUserName={this.addUserName}/>
         <MessageList messages={this.state.messages}/>
-        <Header/>
+        <Header userCount={this.state.userCount}/>
       </div>
     )
   }
