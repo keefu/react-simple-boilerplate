@@ -24,11 +24,11 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on("message", (data) => {
     const {username, content, type} = JSON.parse(data);
-    console.log("Constants", username, content, type);
-    console.log("DATA",data)
+    console.log("Constants:", username, content, type);
+    console.log("DATA:",data)
     let sendToClient;
     // Check the type of message that is sent:
-    console.log("DATA TYPE",type)
+    console.log("DATA TYPE:",type)
     switch(type) {
     // Notification OR Message?
     // If JSON.parse(data).type === "postNotification" ...
@@ -38,6 +38,7 @@ wss.on('connection', (ws) => {
       content:content,
       type: "incomingNotification"
     }
+    break;
     // else if the other type, do this below.
     case "postMessage":
     sendToClient = {
@@ -46,6 +47,7 @@ wss.on('connection', (ws) => {
       content: content,
       type: "incomingMessage"
     }
+    break;
   }
     console.log("CREATE ID option",sendToClient);
     // console.log(`User ${username} said ${content}`);

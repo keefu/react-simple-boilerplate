@@ -83,7 +83,7 @@ class App extends Component {
   //Catch message from server
   handleOnMessage = (event) => {
     console.log(event);
-    console.log("JUST DATA",event.data);
+    console.log("JUST DATA:",event.data);
     const newMessage = JSON.parse(event.data);
     const newMessages = [...this.state.messages, newMessage]
     this.setState({messages: newMessages})
