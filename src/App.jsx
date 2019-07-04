@@ -47,21 +47,40 @@ class App extends Component {
   addMessage = (event) =>  {
     if(event.key === 'Enter') {
     console.log(event.target.value);
-      const newMessage = {username: this.state.currentUser.name, content: event.target.value};
+      const newMessage = {
+        username: this.state.currentUser.name, 
+        content: event.target.value,
+        type: "postMessage",
+      };
       this.SocketServer.send(JSON.stringify(newMessage));
       event.target.value = "";
     }
   }
 
+  // Will send a notification to the socket server
+  sendNotification = msg => {
+    const message = {
+      content: msg,
+      type: 'postNotification',
+    };
+
+    this.SocketServer.send(JSON.stringify(message));
+};
+
   addUserName = (event) => {
+    const notificationMsg = `${this.state.currentUser.name} has changed their name to ${event.target.value || "Anonymous"}`;
     console.log(event.target.value);
-    this.setState({currentUser: {name: event.target.value}});
-    if(event.target.value === ""){
-      this.setState({currentUser: {name: "Anonymous"}});
+    //Check if username has change else do nothing
+    if(event.target.value !== this.state.currentUser.name) {
+    this.setState({currentUser: {name: event.target.value || "Anonymous"}});
+    this.sendNotification(notificationMsg);
     }
+    // if(event.target.value === ""){
+    //   this.setState({currentUser: {name: "Anonymous"}});
+    // }
   }
   
-  //Catching message from server
+  //Catch message from server
   handleOnMessage = (event) => {
     console.log(event);
     console.log("JUST DATA",event.data);

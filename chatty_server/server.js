@@ -23,17 +23,35 @@ const wss = new WebSocket.Server({ server });
 wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on("message", (data) => {
-    const {username, content} = JSON.parse(data);
-    const createId = {
+    const {username, content, type} = JSON.parse(data);
+    console.log("Constants", username, content, type);
+    console.log("DATA",data)
+    let sendToClient;
+    // Check the type of message that is sent:
+    console.log("DATA TYPE",type)
+    switch(type) {
+    // Notification OR Message?
+    // If JSON.parse(data).type === "postNotification" ...
+    case "postNotification": 
+    sendToClient = {
+      id: uuidv4(),
+      content:content,
+      type: "incomingNotification"
+    }
+    // else if the other type, do this below.
+    case "postMessage":
+    sendToClient = {
       id:uuidv4(),
       username: username,
       content: content,
+      type: "incomingMessage"
     }
-    // console.log("CreateID",createId);
+  }
+    console.log("CREATE ID option",sendToClient);
     // console.log(`User ${username} said ${content}`);
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(createId));
+        client.send(JSON.stringify(sendToClient));
       }
     });
     // ws.send(JSON.stringify(createId));
