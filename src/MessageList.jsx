@@ -4,7 +4,7 @@ import Notification from "./Notification.jsx";
 
 class MessageList extends Component {
     render() {
-
+        //Filter props
         let listOfMessages = this.props.messages.map((message, index) => {
             switch(message.type) {
             case "incomingNotification": 

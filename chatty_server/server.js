@@ -4,7 +4,6 @@ const express = require('express');
 const WebSocket = require('ws');
 const uuidv4 = require('uuid/v4');
 
-// Set the port to 3001
 const PORT = 3001;
 
 // Create a new express server
@@ -18,9 +17,6 @@ const wss = new WebSocket.Server({ server });
 let userCount = 0;
 
 // Set up a callback that will run when a client connects to the server
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
-
 wss.on('connection', (ws) => {
   console.log('Client connected');
   userCount++ ;
@@ -33,14 +29,9 @@ wss.on('connection', (ws) => {
   });
   ws.on("message", (data) => {
     const {username, content, type} = JSON.parse(data);
-    console.log("Constants:", username, content, type);
-    console.log("DATA:",data)
     let sendToClient;
-    // Check the type of message that is sent:
-    console.log("DATA TYPE:",type)
+    //Check type of users connected
     switch(type) {
-    // Notification OR Message?
-    // If JSON.parse(data).type === "postNotification" ...
     case "postNotification": 
     sendToClient = {
       id: uuidv4(),
@@ -48,7 +39,6 @@ wss.on('connection', (ws) => {
       type: "incomingNotification"
     }
     break;
-    // else if the other type, do this below.
     case "postMessage":
     sendToClient = {
       id:uuidv4(),
@@ -58,19 +48,17 @@ wss.on('connection', (ws) => {
     }
     break;
   }
-    console.log("CREATE ID option",sendToClient);
-    // console.log(`User ${username} said ${content}`);
+  //Send object for each client connected.
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(sendToClient));
       }
     });
-    // ws.send(JSON.stringify(createId));
-  })
+  });
 
-  // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+  // Set up a callback for when a client closes the socket.
   ws.on('close', () => {
-  console.log('Client disconnected')
+  console.log('Client disconnected');
   userCount--;
   wss.clients.forEach(client => {
     client.send(
@@ -81,4 +69,3 @@ wss.on('connection', (ws) => {
   
 });
 
-console.log("USER COUNT:",userCount);

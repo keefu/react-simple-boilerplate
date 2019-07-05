@@ -60,7 +60,6 @@ body {
   flex: 8;
 }
 .connect-user{
-  float:right;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,6 +72,8 @@ body {
 }
 
 .navbar {
+  display: flex;
+  justify-content: space-between;
   background: tomato;
   border-bottom: 1px solid black;
   height: 60px;
@@ -86,7 +87,6 @@ body {
 .navbar-brand {
   color: inherit;
   display: block;
-  float: left;
   font-weight: 700;
   font-size: 28px;
   height: 60px;
