@@ -9,7 +9,7 @@ class App extends Component {
     this.state = {
       userCount:0,
       currentUser: {name: "Jimmy"}, 
-      messages: []
+      messages: [],
     }
 
   // Creating the connection to the Socket Server
